@@ -2,11 +2,12 @@
 #include "servo/servo_order.h"
 #include "maestro.h"
 
+
 Maestro maestro;
 
 void maestroCallback(const servo::servo_order& msg)
 {
-  ROS_INFO("I heard: [%d, %lf]", msg.numeroMoteur, msg.position);
+  ROS_INFO("servo_node: executed order [%d, %lf]", msg.numeroMoteur, msg.position);
   maestro.fixePosition(msg.numeroMoteur, msg.position);
 }
 
@@ -14,22 +15,27 @@ void maestroCallback(const servo::servo_order& msg)
 
 int main(int argc, char **argv)
 {
-  
+  std::string port;
   ros::init(argc, argv, "servoListener");
   ros::NodeHandle n;
+  n.getParam("maestroPath", port);
+  ROS_INFO("servo_node: port given : %s", port.c_str());
   
-  maestro.connect("/dev/ttyACM0");
+  maestro.connect(port.c_str());
+  ROS_INFO("servo_node: ready");
   
   ros::Subscriber sub = n.subscribe("servo_order", 100, maestroCallback);
   ros::spin();
 
   return 0;
 }
+//---------------------définition de la classe Maestro------------------------
 
 // Ouvre le port et construit l'objet à partir de l'adresse du port USB
 Maestro::Maestro()
 {
-    std::cout << "coucou je suis dans le constructeur" << std::endl;
+    //std::cout << "coucou je suis dans le constructeur" << std::endl;
+    //definition des bornes
     borneMin = 4000;
     borneMax = 8000;
 }
@@ -40,7 +46,9 @@ Maestro::~Maestro()
 }
 
 void Maestro::connect (const char * adresse){
-    int numeroPort = open(adresse, O_RDWR | O_NONBLOCK | O_NOCTTY); //Si ce numéro vaut -1, il y a erreur d'ouverture
+    numeroPort = open(adresse, O_RDWR | O_NONBLOCK | O_NOCTTY); //Si ce numéro vaut -1, il y a erreur d'ouverture
+    ROS_INFO("servo_node: numeroPort %d", numeroPort);
+    
 }
 
 
@@ -74,16 +82,19 @@ short Maestro::mesurePositionMaestro(unsigned char numeroMoteur) const
 bool Maestro::fixePositionMaestro(unsigned char numeroMoteur, unsigned short positionVisee) const
 {
     if(positionVisee > borneMax || positionVisee < borneMin){
-        perror("position visée en dehors des bornes autorisées");
-        positionVisee = max((unsigned short int) borneMin, min((unsigned short int)borneMax, positionVisee));
+        //perror("position visée en dehors des bornes autorisées");
+        //positionVisee = max((unsigned short int) borneMin, min((unsigned short int)borneMax, positionVisee));
+        positionVisee=6000;
     }
+    
 
     unsigned char command[] = {0x84, numeroMoteur, positionVisee & 0x7F, positionVisee >> 7 & 0x7F}; // Commande à envoyer
     if (write(numeroPort, command, sizeof(command)) == -1) // Erreur de commande
     {
-        perror("error writing");
+        ROS_INFO("servo_node: failed order");
         return false;
     }
+    ROS_INFO("servo_node: position set %d %d %d", command[0], command[1], command[2]);
     return true;
 }
 

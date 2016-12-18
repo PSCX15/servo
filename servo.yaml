@@ -1,0 +1,8 @@
+maestroPath: "/dev/ttyACMO"
+
+servo: 0
+servo2: 1
+
+motor: 0
+vitesse: 1
+direction: 2 
