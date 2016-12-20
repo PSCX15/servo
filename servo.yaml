@@ -1,8 +1,57 @@
-maestroPath: "/dev/ttyACMO"
+#fichier de paramètres  pour le package servo
+#objectif : lister les différents appareils branchés à la plaque Maestro
+#enventuellement des bornes physiques de limitation
+#et un nom standard pour proposer une implémentation indépendante des branchements pour les autres modules
 
-servo: 0
-servo2: 1
+#lien vers le fichier /dev de la carte Maestro
+maestroPath: "/dev/ttyACM0"
 
-motor: 0
-vitesse: 1
-direction: 2 
+devices: ["motor", "vitesse", "direction", "servo1", "servo2", "servo3"]
+
+motor: {
+    port: 0,
+    min: 4000,
+    max: 8000,
+    cmin: -100,
+    cmax: 100
+}
+
+vitesse: {
+    port: 1,
+    min: 4000,
+    max: 8000,
+    cmin: 1,
+    cmax: 3
+}
+
+direction: {
+    port: 2,
+    min: 5000,
+    max: 7000,
+    cmin: -30,
+    cmax: 30
+}
+
+servo1: {
+    port: 0,
+    min: 4000,
+    max: 8000,
+    cmin: 4000,
+    cmax: 8000
+}
+
+servo2: {
+    port: 1,
+    min: 4000,
+    max: 8000,
+    cmin: 4000,
+    cmax: 8000
+}
+
+servo3: {
+    port: 2,
+    min: 4000,
+    max: 8000,
+    cmin: 4000,
+    cmax: 8000
+}

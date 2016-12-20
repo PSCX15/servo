@@ -47,6 +47,7 @@ find_package(catkin REQUIRED COMPONENTS
 add_message_files(
   FILES
   servo_order.msg
+  servo_command.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -127,14 +128,23 @@ include_directories(
 # add_dependencies(servo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Declare a C++ executable
- add_executable(servo_node src/servo_node.cpp)
+ add_executable(servo_maestro src/servo_maestro.cpp)
+ 
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
- add_dependencies(servo_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ add_dependencies(servo_maestro ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+ 
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(servo_node
+target_link_libraries(servo_maestro
+   ${catkin_LIBRARIES}
+)
+
+#servo_listener : à l'écoute des autres packages pour des ordres de "haut niveau"et  les retransmet à servo_node
+add_executable(servo_listener src/servo_listener.cpp)
+add_dependencies(servo_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(servo_listener
    ${catkin_LIBRARIES}
 )
 

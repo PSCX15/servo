@@ -4,8 +4,6 @@
 #include <unistd.h>
 #include <algorithm>
 
-
-
 using namespace std;
 
 class Maestro

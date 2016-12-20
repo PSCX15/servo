@@ -7,7 +7,7 @@ Maestro maestro;
 
 void maestroCallback(const servo::servo_order& msg)
 {
-  ROS_INFO("servo_node: executed order [%d, %lf]", msg.numeroMoteur, msg.position);
+  ROS_INFO("servo_maestro: executed order [%d, %lf]", msg.numeroMoteur, msg.position);
   maestro.fixePosition(msg.numeroMoteur, msg.position);
 }
 
@@ -19,12 +19,12 @@ int main(int argc, char **argv)
   ros::init(argc, argv, "servoListener");
   ros::NodeHandle n;
   n.getParam("maestroPath", port);
-  ROS_INFO("servo_node: port given : %s", port.c_str());
+  ROS_INFO("servo_maestro: port given : %s", port.c_str());
   
   maestro.connect(port.c_str());
-  ROS_INFO("servo_node: ready");
+  ROS_INFO("servo_maestro: ready");
   
-  ros::Subscriber sub = n.subscribe("servo_order", 100, maestroCallback);
+  ros::Subscriber sub = n.subscribe("servo_raw_order", 100, maestroCallback);
   ros::spin();
 
   return 0;
@@ -47,7 +47,7 @@ Maestro::~Maestro()
 
 void Maestro::connect (const char * adresse){
     numeroPort = open(adresse, O_RDWR | O_NONBLOCK | O_NOCTTY); //Si ce numéro vaut -1, il y a erreur d'ouverture
-    ROS_INFO("servo_node: numeroPort %d", numeroPort);
+    ROS_INFO("servo_maestro: numeroPort %d", numeroPort);
     
 }
 
@@ -91,10 +91,10 @@ bool Maestro::fixePositionMaestro(unsigned char numeroMoteur, unsigned short pos
     unsigned char command[] = {0x84, numeroMoteur, positionVisee & 0x7F, positionVisee >> 7 & 0x7F}; // Commande à envoyer
     if (write(numeroPort, command, sizeof(command)) == -1) // Erreur de commande
     {
-        ROS_INFO("servo_node: failed order");
+        ROS_INFO("servo_maestro: failed order");
         return false;
     }
-    ROS_INFO("servo_node: position set %d %d %d", command[0], command[1], command[2]);
+    ROS_INFO("servo_maestro: position set %d %d %d", command[0], command[1], command[2]);
     return true;
 }
 
