@@ -72,7 +72,7 @@ void interpretCommand(const servo::servo_command& msg)
     }
     else
     {
-	  ROS_ERROR("servo_listener : got incoherent order %lf  for '%s' while accepted range is (%d, %d)->(%d, %d)",value, msg.device.c_str(), deviceParam["cmin"], deviceParam["cmax"] , deviceParam["min"], deviceParam["max"]);
+	  ROS_ERROR("servo_listener : got incoherent order %lf  for '%s' while accepted range is (%d, %d)->(%d, %d)",msg.value, msg.device.c_str(), deviceParam["cmin"], deviceParam["cmax"] , deviceParam["min"], deviceParam["max"]);
 	}
   }
 }

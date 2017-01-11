@@ -17,15 +17,15 @@ motor: {
 }
 
 vitesse: {
-    port: 1,
-    min: 4000,
-    max: 8000,
+    port: 5,
+    min: 4600,
+    max: 6100,
     cmin: 1,
     cmax: 3
 }
 
 direction: {
-    port: 2,
+    port: 6,
     min: 5000,
     max: 7000,
     cmin: -30,

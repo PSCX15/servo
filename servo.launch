@@ -1,5 +1,5 @@
 <launch>
   <rosparam command="load" file="servo.yaml" />
-  <node name="servo_maestro" pkg="servo" type="servo_maestro" />
+  <node name="servo_maestro" pkg="servo" type="servo_maestro" respawn="true" />
   <node name="servo_listener" pkg="servo" type="servo_listener" />
 </launch>

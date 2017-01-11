@@ -1,3 +1,4 @@
+
 #include "ros/ros.h"
 #include "servo/servo_order.h"
 #include "maestro.h"
@@ -85,6 +86,7 @@ bool Maestro::fixePositionMaestro(unsigned char numeroMoteur, unsigned short pos
         //perror("position visée en dehors des bornes autorisées");
         //positionVisee = max((unsigned short int) borneMin, min((unsigned short int)borneMax, positionVisee));
         positionVisee=6000;
+    
     }
     
 
