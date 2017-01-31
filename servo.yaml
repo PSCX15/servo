@@ -4,7 +4,7 @@
 #et un nom standard pour proposer une implémentation indépendante des branchements pour les autres modules
 
 #lien vers le fichier /dev de la carte Maestro
-maestroPath: "/dev/ttyACM0"
+maestroPath: "/dev/ttyACM1"
 
 devices: ["motor", "vitesse", "direction", "servo1", "servo2", "servo3"]
 
@@ -26,10 +26,10 @@ vitesse: {
 
 direction: {
     port: 6,
-    min: 5000,
-    max: 7000,
-    cmin: -30,
-    cmax: 30
+    min: 4900,
+    max: 7100,
+    cmin: -100,
+    cmax: 100
 }
 
 servo1: {
@@ -49,7 +49,7 @@ servo2: {
 }
 
 servo3: {
-    port: 2,
+    port: 9,
     min: 4000,
     max: 8000,
     cmin: 4000,
