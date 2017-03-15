@@ -4,7 +4,7 @@
 #et un nom standard pour proposer une implémentation indépendante des branchements pour les autres modules
 
 #lien vers le fichier /dev de la carte Maestro
-maestroPath: "/dev/ttyACM1"
+maestroPath: "/dev/ttyACM0"
 
 devices: ["motor", "vitesse", "direction", "servo1", "servo2", "servo3"]
 
