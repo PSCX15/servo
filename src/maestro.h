@@ -16,7 +16,7 @@ Les bornes sont toutes initialisées à 4000, 8000
 */
     Maestro();
     virtual ~Maestro(); // Destructeur
-    void connect(const char * adresse);
+    int connect(const char * adresse);
     bool fixePosition(unsigned char numeroMoteur, float positionVisee) const;
 private:
     bool fixePositionMaestro(unsigned char numeroMoteur, unsigned short positionVisee) const;

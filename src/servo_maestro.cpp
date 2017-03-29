@@ -3,15 +3,38 @@
 #include "servo/servo_order.h"
 #include "maestro.h"
 
+#include "std_msgs/Bool.h"
 
 Maestro maestro;
+ros::Time lastbeat;
+std::vector<string> devices;
+unsigned char portMotor;
+
+bool autorisation = false;
 
 void maestroCallback(const servo::servo_order& msg)
 {
+	if(autorisation){
   ROS_INFO("servo_maestro: executed order [%d, %lf]", msg.numeroMoteur, msg.position);
   maestro.fixePosition(msg.numeroMoteur, msg.position);
+  }
 }
 
+void heartbeat(const std_msgs::Bool::ConstPtr& msg){
+	if(msg->data){lastbeat = ros::Time::now();}
+}
+
+void testTimeOut(const ros::TimerEvent&){
+	if(ros::Time::now()-lastbeat>=ros::Duration(1.5)){
+		autorisation = false;	
+		maestro.fixePosition(portMotor, 6000.0);
+		ros::Duration(0.2).sleep();
+		maestro.fixePosition(portMotor, 6000.0);
+	}
+	else{
+		autorisation=true;
+	}
+}
 
 
 int main(int argc, char **argv)
@@ -22,10 +45,28 @@ int main(int argc, char **argv)
   n.getParam("maestroPath", port);
   ROS_INFO("servo_maestro: port given : %s", port.c_str());
   
-  maestro.connect(port.c_str());
-  ROS_INFO("servo_maestro: ready");
+  if(maestro.connect(port.c_str())>=0){
+  	ROS_INFO("servo_maestro: ready");
+  }
+  else{
+  	ROS_ERROR("servo_maestro: unnable to connect");
+  }
   
   ros::Subscriber sub = n.subscribe("servo_raw_order", 100, maestroCallback);
+  
+  n.getParam("devices", devices);
+  std::map<string, int> motorParam;
+  
+  n.getParam("motor", motorParam);
+  
+  portMotor = motorParam["port"];
+  
+  lastbeat = ros::Time::now();
+  
+  ros::Subscriber emergencyOn = n.subscribe("bondServo",100, heartbeat);
+  
+  ros::Timer timer = n.createTimer(ros::Duration(1.0), testTimeOut);
+  
   ros::spin();
 
   return 0;
@@ -46,10 +87,22 @@ Maestro::~Maestro()
     //destructeur
 }
 
-void Maestro::connect (const char * adresse){
+int Maestro::connect (const char * adresse){
     numeroPort = open(adresse, O_RDWR | O_NONBLOCK | O_NOCTTY); //Si ce numéro vaut -1, il y a erreur d'ouverture
+    int i =1;
+   /* while(numeroPort==-1 && i<10){
+			stringstream ss;
+			ss << i;
+			string str = ss.str();
+    	string adressechelou = "/dev/ttyACM99";
+    	string adresseComplete = "/dev/ttyACM" + str;
+    	ROS_INFO("on teste %s", adresseComplete.c_str());
+    	numeroPort = open(adresseComplete.c_str(), O_RDWR | O_NONBLOCK | O_NOCTTY);
+    	i++;	
+    }
+    */
     ROS_INFO("servo_maestro: numeroPort %d", numeroPort);
-    
+    return numeroPort;
 }
 
 

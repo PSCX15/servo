@@ -2,8 +2,12 @@
 #include "servo/servo_command.h"
 #include "servo/servo_order.h"
 #include "maestro.h"
+#include "std_msgs/String.h"
+#include "std_msgs/Bool.h"
+
 
 void interpretCommand(const servo::servo_command& msg);
+void emergencyOn(const std_msgs::Bool::ConstPtr& msg);
 int getRawOrder(float value, std::map<string, int> deviceParam);
 
 std::vector<string> devices;
@@ -11,12 +15,14 @@ std::map<string, map<string, int> > params;
 
 ros::Publisher rawOrder_pub;
 
+
+
 int main(int argc, char **argv)
 {
   
   std::string deviceName, bilan;
   std::map<string, int> deviceParam;
- 
+ 	
   
   ros::init(argc, argv, "servoListener");
   ros::NodeHandle n;
@@ -27,6 +33,10 @@ int main(int argc, char **argv)
 
   //declare le subscriber pour le monde exterieur
   ros::Subscriber command_sub = n.subscribe("servo_command", 100, interpretCommand);
+  
+  
+  
+  
   
   n.getParam("devices", devices);
   
@@ -50,6 +60,7 @@ int main(int argc, char **argv)
 
   return 0;
 }
+
 
 void interpretCommand(const servo::servo_command& msg)
 {
