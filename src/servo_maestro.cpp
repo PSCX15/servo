@@ -15,7 +15,7 @@ bool autorisation = false;
 void maestroCallback(const servo::servo_order& msg)
 {
 	if(autorisation){
-  ROS_INFO("servo_maestro: executed order [%d, %lf]", msg.numeroMoteur, msg.position);
+  //ROS_INFO("servo_maestro: executed order [%d, %lf]", msg.numeroMoteur, msg.position);
   maestro.fixePosition(msg.numeroMoteur, msg.position);
   }
 }
@@ -149,7 +149,7 @@ bool Maestro::fixePositionMaestro(unsigned char numeroMoteur, unsigned short pos
         ROS_INFO("servo_maestro: failed order");
         return false;
     }
-    ROS_INFO("servo_maestro: position set %d %d %d", command[0], command[1], command[2]);
+    //ROS_INFO("servo_maestro: position set %d %d %d", command[0], command[1], command[2]);
     return true;
 }
 
