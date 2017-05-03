@@ -26,8 +26,8 @@ vitesse: {
 
 direction: {
     port: 6,
-    min: 5200,
-    max: 7000,
+    min: 4900,
+    max: 7100,
     cmin: -100,
     cmax: 100
 }
